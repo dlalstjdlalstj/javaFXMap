@@ -1,0 +1,427 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+<div class="map_box">
+    <div class="map_img right">
+        <style>
+            #map {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+        <div id="map"></div>
+
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=171192349e78334c4e8341e7212c59da&libraries=clusterer,services"></script>
+        <script>
+            // map
+            var map;
+            // 마커를 표시할 위치와 title 객체 배열입니다
+            var positions = [];
+            var overlayArray = [];
+            // 지도에 표시된 마커 객체를 가지고 있을 배열입니다
+            var markers = [];
+            var clusterer;
+
+            // part marker list
+            var spotMarks = [];
+            var sleepMarks = [];
+            var drinkMarks = [];
+            var experienceMarks = [];
+            var hospitalMarks = [];
+        </script>
+        <script>
+            //  create a map
+            function fnCreateMap(_params) {
+                var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                    mapOption = {
+                        center: new kakao.maps.LatLng(37.70262176313712, 128.31754989286117), // 지도의 중심좌표
+                        level: 11 // 지도의 확대 레벨
+                    };
+
+                // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+                map = new kakao.maps.Map(mapContainer, mapOption);
+
+                // 지도가 확대 또는 축소되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+                kakao.maps.event.addListener(map, 'zoom_changed', function() {
+                    // 지도의 현재 레벨을 얻어옵니다
+                    var level = map.getLevel();
+
+                    if(level > 11) {
+                        // alert 출력 제거, 2021-09-16 jylee
+                        // alert("확대를 더 할 수 없습니다.");
+                        map.setLevel(11);
+                        map.setCenter(new kakao.maps.LatLng(37.70262176313712, 128.31754989286117));
+                    }
+                });
+
+                // 마커 클러스터러를 생성합니다
+                clusterer = new kakao.maps.MarkerClusterer({
+                    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+                    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+                    minLevel: 5 // 클러스터 할 최소 지도 레벨
+                });
+
+                // initial variables
+                areaCode = "";
+                areaName = "";
+                partCode = "";
+                positions = [];
+                overlayArray = [];
+                markers = [];
+                spotMarks = [];
+                sleepMarks = [];
+                drinkMarks = [];
+                experienceMarks = [];
+                hospitalMarks = [];
+
+                if(_params.init === undefined) {
+                    var keyword = _params.searchKeyword;
+                    // start loading
+                    fnStartLoading();
+                    // find a content data of map
+                    $.ajax({
+                        url : "/others/map/content/find",
+                        cache : false,
+                        type : "POST",
+                        dataType : "JSON",
+                        data : _params,
+                        beforeSend : function (xhr) {
+                            // add csrf token - add by YJ.SON :: 2021-05-16
+                            xhr.setRequestHeader(csrf_token_header, csrf_token);
+                        },
+                        success : function (data) {
+                            if(data.result == "success") {
+                                // setup marker and overlay
+                                var clusterMarkerList = $(data.positions).map(function(i, position) {
+                                    markers[position.seq] = addMarker(position);
+                                    if("PC01" == position.partCode) {
+                                        drinkMarks.push(markers[position.seq]);
+                                    } else if("PC02" == position.partCode) {
+                                        sleepMarks.push(markers[position.seq]);
+                                    } else if("PC03" == position.partCode) {
+                                        spotMarks.push(markers[position.seq]);
+                                    } else if("PC04" == position.partCode) {
+                                        experienceMarks.push(markers[position.seq]);
+                                    } else if("PC05" == position.partCode) {
+                                        hospitalMarks.push(markers[position.seq]);
+                                    }
+
+                                    return markers[position.seq];
+                                });
+
+                                // 클러스터러에 마커들을 추가합니다
+                                clusterer.addMarkers(clusterMarkerList);
+                            }
+                        },
+                        error : function () {
+                            alert("SERVER Error");
+                        },
+                        complete : function () {
+                            // end loading
+                            fnEndLoading();
+
+                            // reset map center and level
+                            if(_params.areaName !== undefined) {
+                                // find a selected area positions
+                                var address = "강원도 " + _params.areaName;
+                                // 주소-좌표 변환 객체를 생성합니다
+                                var geocoder = new kakao.maps.services.Geocoder();
+                                // 주소로 좌표를 검색합니다
+                                geocoder.addressSearch(address, function(result, status) {
+                                    // 정상적으로 검색이 완료됐으면
+                                    if (status === kakao.maps.services.Status.OK) {
+                                        map.setLevel(map.getLevel() - 3);
+                                        map.setCenter(new kakao.maps.LatLng(result[0].y, result[0].x));
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    // 마커 클러스터러에 클릭이벤트를 등록합니다
+                    // 마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
+                    // 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
+                    kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
+
+                        // 현재 지도 레벨에서 1레벨 확대한 레벨
+                        var level = map.getLevel()-1;
+
+                        // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
+                        map.setLevel(level, {anchor: cluster.getCenter()});
+                    });
+                }
+            }
+
+            // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다
+            function closeOverlay(_seq) {
+                // enable zoom
+                map.setZoomable(true);
+                // enable move
+                map.setDraggable(true);
+                // remove overlay
+                overlayArray[_seq].setMap(null);
+            }
+
+            // show and hide marker
+            function setupMarkers(map, _partCode) {
+
+                // clear cluster
+                clusterer.clear();
+
+                if("all" !== _partCode) {
+                    var partMarkerList = [];
+                    $("input[name='partCode']").each(function (i, e) {
+                        if($(this).is(":checked")) {
+                            if("PC01" == $(this).val()) {
+                                partMarkerList = partMarkerList.concat(drinkMarks);
+                            } else if("PC02" == $(this).val()) {
+                                partMarkerList = partMarkerList.concat(sleepMarks);
+                            } else if("PC03" == $(this).val()) {
+                                partMarkerList = partMarkerList.concat(spotMarks);
+                            } else if("PC04" == $(this).val()) {
+                                partMarkerList = partMarkerList.concat(experienceMarks);
+                            } else if("PC05" == $(this).val()) {
+                                partMarkerList = partMarkerList.concat(hospitalMarks);
+                            }
+                        }
+                    });
+
+                    for (var i = 0; i < partMarkerList.length; i++) {
+                        if(partMarkerList[i] !== undefined) {
+                            partMarkerList[i].setMap(map);
+                        }
+                    }
+
+                    clusterer.addMarkers(partMarkerList);
+                }
+            }
+        </script>
+    </div>
+    <!-- //map_img -->
+
+    <div class="course_all">
+        <div class="course_all_top">
+            <h3>
+                데이터 지도 보기
+            </h3>
+            <label for="search" class="blind">검색</label>
+            <input id="search" name="searchMap" type="text" placeholder="주소 또는 명칭으로 검색하실 수있습니다." />
+
+            <ul class="search_list clearfix">
+                <li class="tourism">
+                    <a href="/petapi/data/tour">
+                        <span>관광</span>
+                    </a>
+                </li>
+                <li class="lodgment">
+                    <a href="/petapi/data/lodge">
+                        <span>숙박</span>
+                    </a>
+                </li>
+                <li class="beverage">
+                    <a href="/petapi/data/food">
+                        <span>식음료</span>
+                    </a>
+                </li>
+                <li class="experience">
+                    <a href="/petapi/data/experience">
+                        <span>체험</span>
+                    </a>
+                </li>
+                <li class="animal_hospital">
+                    <a href="/petapi/data/hospital">
+                        <span>동물병원</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- //search_list -->
+        </div>
+        <!-- //course_all_top -->
+
+        <div class="course_all_box choose-filed">
+            <strong>주변 탐색</strong>
+            <ul>
+                <li>
+                    <input type="checkbox" id="tourist_destination" name="partCode" value="PC03" checked>
+                    <label for="tourist_destination">관광지</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="lodgment" name="partCode" value="PC02" checked>
+                    <label for="lodgment">숙박</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="beverage" name="partCode" value="PC01" checked>
+                    <label for="beverage">식음료</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="experience" name="partCode" value="PC04" checked>
+                    <label for="experience">체험</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="animal_hospital" name="partCode" value="PC05" checked>
+                    <label for="animal_hospital">동물병원</label>
+                </li>
+            </ul>
+        </div>
+        <!-- //course_all_box -->
+
+        <div class="btn_box01">
+            <button class="btn_open"><span class="blind">댕댕여지도 검색 열기</span></button>
+            <button class="btn_close"><span class="blind">댕댕여지도 검색 닫기</span></button>
+        </div>
+        <!-- //btn3 -->
+
+    </div>
+    <!-- //course_all -->
+</div>
+<script>
+    $(document).ready(function (event) {
+        var params = {
+            areaCode : "",
+            partCode : "",
+            searchKeywordTo : ""
+        };
+
+        fnCreateMap(params);
+
+        // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+        var mapTypeControl = new kakao.maps.MapTypeControl();
+        // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+        // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+        map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+        var zoomControl = new kakao.maps.ZoomControl();
+        map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+        // keyword enter key
+        $("input[name='searchMap']").keypress(function (event) {
+            if(event.keyCode == 13) {
+                $("input[name='partCode']").prop("checked", true);
+                var params = {
+                    searchKeywordTo : $(this).val()
+                };
+                fnCreateMap(params);
+            }
+        });
+
+        // select part code
+        $("input[name='partCode']").click(function (event) {
+            if($(this).is(":checked")) {
+                setupMarkers(map, $(this).val());
+            } else {
+                setupMarkers(null, $(this).val());
+            }
+        });
+    });
+
+    // add an markers
+    function addMarker(_position) {
+        var imageSrc = "/page/portal/images/common/icon_map_" + _position.partCode + ".png";
+        // 마커 이미지의 이미지 크기 입니다
+        var imageSize = new kakao.maps.Size(30, 35);
+        // 마커 이미지를 생성합니다
+        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            map: map, // 마커를 표시할 지도
+            position: new kakao.maps.LatLng(_position.latitude, _position.longitude), // 마커를 표시할 위치
+            image : markerImage, // 마커 이미지
+            clickable: true, // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+            title : _position.title
+        });
+
+        // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+        kakao.maps.event.addListener(marker, 'click', function() {
+            var content = "";
+            if("PC05" == _position.partCode) {
+                content = "" +
+                    "<div class=\"map_popup\">\n" +
+                    "   <strong>\n" +
+                    "       " + _position.title + "\n" +
+                    "   </strong>\n" +
+                    "   <p>\n" +
+                    "       " + _position.address + "\n" +
+                    "   </p>\n" +
+                    "   <button class=\"pop_close\" onclick=\"closeOverlay(" + _position.seq + ")\"><span class=\"blind\">팝업닫기</span></button>\n" +
+                    "</div>";
+
+            } else {
+                content = "" +
+                    "<div class=\"map_popup\">\n" +
+                    "   <strong>\n" +
+                    "       " + _position.title + "\n" +
+                    "   </strong>\n" +
+                    "   <div class=\"img_box\">\n" +
+                    "       <img src='" + _position.image + "' alt='" + _position.title + "'>\n" +
+                    "   </div>\n" +
+                    "   <p>\n" +
+                    "       " + _position.address + "\n" +
+                    "   </p>\n" +
+                    "   <a href=\"javascript:fnViewContent('" + _position.partCode + "\', " + _position.seq + ")\" style='width:100%;'>상세보기</a>\n" +
+                    "   <button class=\"pop_close\" onclick=\"closeOverlay(" + _position.seq + ")\"><span class=\"blind\">팝업닫기</span></button>\n" +
+                    "</div>";
+            }
+
+            // initial view content
+            $(".map_popup").remove();
+            // move map center
+            map.setCenter(marker.getPosition());
+
+            // 마커 위에 커스텀오버레이를 표시합니다
+            // 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+            var overlay = new kakao.maps.CustomOverlay({
+                position: marker.getPosition(),
+                content: content,
+                zIndex: 100
+            });
+
+            // save overlay value
+            overlayArray[_position.seq] = overlay;
+
+            // disable zoom
+            //map.setZoomable(false);
+            // disable move
+            //map.setDraggable(false);
+            // setup overlay
+            overlay.setMap(map);
+        });
+
+        // 마커가 지도 위에 표시되도록 설정합니다
+        marker.setMap(map);
+
+        return marker;
+    }
+
+    // view content
+    function fnViewContent(_code, _seq) {
+        var codeName = "";
+        if("PC02" == _code) {
+            codeName = "lodge";
+        } else if("PC03" == _code) {
+            codeName = "tour";
+        } else if("PC01" == _code) {
+            codeName = "food";
+        } else if("PC04" == _code) {
+            codeName = "experience";
+        } else if("PC05" == _code) {
+            codeName = "hospital";
+        }
+        location.href = "/petapi/data/" + codeName + "?contentSeq=" + _seq;
+    }
+</script>
+
+
+
+
+
+</body>
+</html>
