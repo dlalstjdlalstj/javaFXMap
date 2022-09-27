@@ -13,196 +13,22 @@
         <style>
             #map {
                 width: 100%;
-                height: 100%;
+                height: 500px;
             }
         </style>
-
         <div id="map"></div>
 
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=171192349e78334c4e8341e7212c59da&libraries=clusterer,services"></script>
         <script>
             // map
             var map;
-            // 마커를 표시할 위치와 title 객체 배열입니다
-            var positions = [];
-            var overlayArray = [];
-            // 지도에 표시된 마커 객체를 가지고 있을 배열입니다
-            var markers = [];
-            var clusterer;
-
-            // part marker list
-            var spotMarks = [];
-            var sleepMarks = [];
-            var drinkMarks = [];
-            var experienceMarks = [];
-            var hospitalMarks = [];
-        </script>
-        <script>
-            //  create a map
-            function fnCreateMap(_params) {
                 var mapContainer = document.getElementById('map'), // 지도를 표시할 div
                     mapOption = {
-                        center: new kakao.maps.LatLng(37.70262176313712, 128.31754989286117), // 지도의 중심좌표
-                        level: 11 // 지도의 확대 레벨
+                        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+                        level: 3 // 지도의 확대 레벨
                     };
-
                 // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
                 map = new kakao.maps.Map(mapContainer, mapOption);
-
-                // 지도가 확대 또는 축소되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
-                kakao.maps.event.addListener(map, 'zoom_changed', function() {
-                    // 지도의 현재 레벨을 얻어옵니다
-                    var level = map.getLevel();
-
-                    if(level > 11) {
-                        // alert 출력 제거, 2021-09-16 jylee
-                        // alert("확대를 더 할 수 없습니다.");
-                        map.setLevel(11);
-                        map.setCenter(new kakao.maps.LatLng(37.70262176313712, 128.31754989286117));
-                    }
-                });
-
-                // 마커 클러스터러를 생성합니다
-                clusterer = new kakao.maps.MarkerClusterer({
-                    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
-                    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-                    minLevel: 5 // 클러스터 할 최소 지도 레벨
-                });
-
-                // initial variables
-                areaCode = "";
-                areaName = "";
-                partCode = "";
-                positions = [];
-                overlayArray = [];
-                markers = [];
-                spotMarks = [];
-                sleepMarks = [];
-                drinkMarks = [];
-                experienceMarks = [];
-                hospitalMarks = [];
-
-                if(_params.init === undefined) {
-                    var keyword = _params.searchKeyword;
-                    // start loading
-                    fnStartLoading();
-                    // find a content data of map
-                    $.ajax({
-                        url : "/others/map/content/find",
-                        cache : false,
-                        type : "POST",
-                        dataType : "JSON",
-                        data : _params,
-                        beforeSend : function (xhr) {
-                            // add csrf token - add by YJ.SON :: 2021-05-16
-                            xhr.setRequestHeader(csrf_token_header, csrf_token);
-                        },
-                        success : function (data) {
-                            if(data.result == "success") {
-                                // setup marker and overlay
-                                var clusterMarkerList = $(data.positions).map(function(i, position) {
-                                    markers[position.seq] = addMarker(position);
-                                    if("PC01" == position.partCode) {
-                                        drinkMarks.push(markers[position.seq]);
-                                    } else if("PC02" == position.partCode) {
-                                        sleepMarks.push(markers[position.seq]);
-                                    } else if("PC03" == position.partCode) {
-                                        spotMarks.push(markers[position.seq]);
-                                    } else if("PC04" == position.partCode) {
-                                        experienceMarks.push(markers[position.seq]);
-                                    } else if("PC05" == position.partCode) {
-                                        hospitalMarks.push(markers[position.seq]);
-                                    }
-
-                                    return markers[position.seq];
-                                });
-
-                                // 클러스터러에 마커들을 추가합니다
-                                clusterer.addMarkers(clusterMarkerList);
-                            }
-                        },
-                        error : function () {
-                            alert("SERVER Error");
-                        },
-                        complete : function () {
-                            // end loading
-                            fnEndLoading();
-
-                            // reset map center and level
-                            if(_params.areaName !== undefined) {
-                                // find a selected area positions
-                                var address = "강원도 " + _params.areaName;
-                                // 주소-좌표 변환 객체를 생성합니다
-                                var geocoder = new kakao.maps.services.Geocoder();
-                                // 주소로 좌표를 검색합니다
-                                geocoder.addressSearch(address, function(result, status) {
-                                    // 정상적으로 검색이 완료됐으면
-                                    if (status === kakao.maps.services.Status.OK) {
-                                        map.setLevel(map.getLevel() - 3);
-                                        map.setCenter(new kakao.maps.LatLng(result[0].y, result[0].x));
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-                    // 마커 클러스터러에 클릭이벤트를 등록합니다
-                    // 마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
-                    // 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
-                    kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
-
-                        // 현재 지도 레벨에서 1레벨 확대한 레벨
-                        var level = map.getLevel()-1;
-
-                        // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
-                        map.setLevel(level, {anchor: cluster.getCenter()});
-                    });
-                }
-            }
-
-            // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다
-            function closeOverlay(_seq) {
-                // enable zoom
-                map.setZoomable(true);
-                // enable move
-                map.setDraggable(true);
-                // remove overlay
-                overlayArray[_seq].setMap(null);
-            }
-
-            // show and hide marker
-            function setupMarkers(map, _partCode) {
-
-                // clear cluster
-                clusterer.clear();
-
-                if("all" !== _partCode) {
-                    var partMarkerList = [];
-                    $("input[name='partCode']").each(function (i, e) {
-                        if($(this).is(":checked")) {
-                            if("PC01" == $(this).val()) {
-                                partMarkerList = partMarkerList.concat(drinkMarks);
-                            } else if("PC02" == $(this).val()) {
-                                partMarkerList = partMarkerList.concat(sleepMarks);
-                            } else if("PC03" == $(this).val()) {
-                                partMarkerList = partMarkerList.concat(spotMarks);
-                            } else if("PC04" == $(this).val()) {
-                                partMarkerList = partMarkerList.concat(experienceMarks);
-                            } else if("PC05" == $(this).val()) {
-                                partMarkerList = partMarkerList.concat(hospitalMarks);
-                            }
-                        }
-                    });
-
-                    for (var i = 0; i < partMarkerList.length; i++) {
-                        if(partMarkerList[i] !== undefined) {
-                            partMarkerList[i].setMap(map);
-                        }
-                    }
-
-                    clusterer.addMarkers(partMarkerList);
-                }
-            }
         </script>
     </div>
     <!-- //map_img -->
