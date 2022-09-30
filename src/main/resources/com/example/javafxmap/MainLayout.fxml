@@ -3,8 +3,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxmap.MainController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxmap.WebViewController">
    <children>
-      <WebView fx:id="webView" prefHeight="400.0" prefWidth="600.0" />
+      <WebView fx:id="webView" prefHeight="1020.0" prefWidth="1920.0" />
    </children>
 </AnchorPane>

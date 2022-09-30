@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
@@ -19,6 +18,7 @@ public class App extends Application {
             scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
+            primaryStage.setTitle("댕댕맵");
             primaryStage.show();
         } catch(Exception e) {
             e.printStackTrace();
