@@ -16,6 +16,7 @@
    <children>
       <Pane fx:id="loginBackColor" prefHeight="768.0" prefWidth="1024.0">
          <children>
+            <Pane layoutX="308.0" layoutY="137.0" prefHeight="494.0" prefWidth="408.0" />
             <VBox fx:id="vbox" alignment="CENTER" layoutX="387.0" layoutY="242.0" prefHeight="284.0" prefWidth="250.0" spacing="15.0" style="-fx-background-radius: 5px;">
                <children>
                   <TextField fx:id="inputID" prefHeight="20.0" prefWidth="190.0" promptText="ID" style="-fx-border-radius: 3px; -fx-background-color: transparent;">
