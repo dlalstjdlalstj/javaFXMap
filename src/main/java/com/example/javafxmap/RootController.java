@@ -1,11 +1,5 @@
 package com.example.javafxmap;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -21,7 +15,6 @@ import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -35,7 +28,6 @@ public class RootController {
 
     @FXML VBox vbox;
     @FXML Label UserLogin;
-    @FXML ImageView loginBackImage;
     @FXML Pane loginBackColor;
 
     public static Connection Connect() {

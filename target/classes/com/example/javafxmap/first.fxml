@@ -16,7 +16,8 @@
    <children>
       <Pane fx:id="loginBackColor" prefHeight="768.0" prefWidth="1024.0">
          <children>
-            <VBox fx:id="vbox" alignment="CENTER" layoutX="387.0" layoutY="242.0" prefHeight="284.0" prefWidth="250.0" spacing="15.0" style="-fx-background-radius: 5px;">
+            <Pane id="stroke" layoutX="308.0" layoutY="137.0" prefHeight="494.0" prefWidth="408.0" />
+            <VBox fx:id="vbox" alignment="CENTER_LEFT" layoutX="387.0" layoutY="242.0" prefHeight="284.0" prefWidth="250.0" spacing="15.0" style="-fx-background-radius: 5px;">
                <children>
                   <TextField fx:id="inputID" prefHeight="20.0" prefWidth="190.0" promptText="ID" style="-fx-border-radius: 3px; -fx-background-color: transparent;">
                      <cursor>
@@ -28,15 +29,18 @@
                   <Button fx:id="UserSignUp" mnemonicParsing="false" onAction="#goUserSignUp" prefWidth="150.0" text="Sign Up" />
                </children>
                <padding>
-                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                  <Insets bottom="10.0" right="20.0" top="10.0" />
                </padding>
             </VBox>
-            <HBox alignment="CENTER" layoutX="312.0" layoutY="221.0" prefHeight="42.0" prefWidth="400.0">
+            <HBox alignment="CENTER_LEFT" layoutX="312.0" layoutY="221.0" prefHeight="42.0" prefWidth="400.0">
                <children>
-                  <Label fx:id="UserLogin" alignment="CENTER" maxWidth="1.7976931348623157E308" text="User Login" textFill="WHITE">
+                  <Label fx:id="UserLogin" alignment="CENTER" maxWidth="1.7976931348623157E308" text="dogmap">
                      <font>
                         <Font size="29.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets left="75.0" />
+                     </HBox.margin>
                   </Label>
                </children>
             </HBox>
