@@ -1,3 +1,8 @@
-#stroke {
+#login_form {
+    -fx-padding: 60px 70px 60px 70px;
     -fx-border-color: gray;
+}
+
+#loginBackColor {
+    -fx-background-color: #fff;
 }
