@@ -6,3 +6,21 @@
 #loginBackColor {
     -fx-background-color: #fff;
 }
+
+.text-input, .text-input:focused {
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
+}
+
+.text-input {
+    -fx-background-insets: 0, 0 0 2 0;
+    -fx-background-color: #a0a0a0, white;
+    -fx-background-radius: 0;
+}
+
+.text-input:focused {
+    -fx-background-color: black, white;
+}
+
+#login_btn {
+    -fx-background-color: #fee505;
+}

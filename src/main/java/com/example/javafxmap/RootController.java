@@ -1,8 +1,17 @@
 package com.example.javafxmap;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ResourceBundle;
 
+import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,38 +24,72 @@ import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
-public class RootController {
+public class RootController implements Initializable {
 
     @FXML Button user;
-    @FXML Button UserSignUp;
+    @FXML Button manager;
+    @FXML TextField getID;
+    @FXML PasswordField getPW;
+    @FXML TextField getPhoneNum;
+    @FXML TextField getName;
+    @FXML Label UserSignUp;
+    @FXML Button home;
     @FXML PasswordField inputPW;
     @FXML TextField inputID;
     @FXML Button loginOK;
 
+    int checkNum = -1;
+    @FXML PasswordField confirmPW;
+    @FXML Button submitBtn;
+    @FXML Label title;
     @FXML VBox vbox;
     @FXML Label UserLogin;
+    @FXML ImageView firstBackImage;
+    @FXML Pane firstBackColor;
+    @FXML ImageView loginBackImage;
     @FXML Pane loginBackColor;
+    @FXML ImageView usersignupBackImage;
+    @FXML Pane usersignupBackColor;
+    @FXML ImageView managerloginBackImage;
+    @FXML Pane managerloginBackColor;
+    @FXML TextField inputManagerID;
+    @FXML PasswordField inputManagerPW;
+    @FXML Button home2;
+    @FXML Button checkExistBtn;
+    @FXML Button managerOK;
+    @FXML Label ManagerLogin;
+    @FXML Label UserSignupLabel;
 
-    public static Connection Connect() {
-        String url = "jdbc:mysql://localhost:3306/yydh";
-        String userName = "root";
-        String password = "";
-        Connection conn = null;
+    Socket socket;
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(url, userName, password);
-        }
-        catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return conn;
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+//        //클라이언트 소켓 생성
+//        if(!MyInfo.socketConnect) {
+//
+//            final String SERVER_IP = "192.168.0.83";
+//
+//            final int SERVER_PORT = 8080;
+//
+//            socket = new Socket();
+//
+//            try {
+//                socket.connect( new InetSocketAddress(SERVER_IP, SERVER_PORT) );
+//                System.out.println("success connection to server");
+//                MyInfo.setConnect(true);
+//                MyInfo.setSocket(socket);
+//            }
+//
+//            catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
     }
 
     @FXML public void moveUser() throws Exception{
@@ -110,17 +153,16 @@ public class RootController {
         }
     }
 
-    @FXML public void goUserSignUp() throws Exception{
-
-        Stage primaryStage = new Stage();
-        Parent signUp = FXMLLoader.load(getClass().getResource("templates/UserSignup.fxml"));
-        signUp.getStylesheets().add(getClass().getResource("statics/UserSignup.css").toExternalForm());
-        primaryStage.setScene(new Scene(signUp));
-        primaryStage.show();
-        primaryStage.setResizable(false);
-
-        Stage stage = (Stage)UserSignUp.getScene().getWindow();
-        stage.close();
+    @FXML public void goUserSignUp(){
+        try {
+            Parent nextScene
+                    = FXMLLoader.load(getClass().getResource("UserSignUP.fxml"));
+            Scene scene = new Scene(nextScene);
+            Stage primaryStage = (Stage) UserSignUp.getScene().getWindow();
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML public void toHome() throws Exception {
