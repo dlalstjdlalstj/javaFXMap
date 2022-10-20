@@ -1,9 +1,9 @@
 #login_form {
     -fx-padding: 60px 70px 60px 70px;
-    -fx-border-color: gray;
+    -fx-border-color: rgba(0,0,0,.12);
 }
 
-#loginBackColor {
+.loginBackColor {
     -fx-background-color: #fff;
 }
 
@@ -23,4 +23,17 @@
 
 #login_btn {
     -fx-background-color: #fee505;
+}
+
+#signUp_form {
+    -fx-border-color: rgba(0,0,0,.12);
+}
+
+#signUp_bar {
+    -fx-background-color: #333;
+    -fx-background-radius: 4px;
+}
+
+.signUp_submit {
+    -fx-background-color: #f0f0f0;
 }

@@ -1,14 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxmap.RootController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="920.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxmap.RootController">
    <children>
-      <Pane prefHeight="600.0" prefWidth="400.0">
+      <Pane prefHeight="920.0" prefWidth="1300.0" styleClass="loginBackColor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
          <children>
-            <Label layoutX="60.0" layoutY="74.0" text="로그인에 사용할 아이디와\비밀번호를 입력해주세요" />
+            <VBox id="signUp_form" alignment="CENTER" fillWidth="false" layoutX="389.0" layoutY="134.0" prefHeight="653.0" prefWidth="580.0">
+               <children>
+                  <VBox fillWidth="false" prefHeight="615.0" prefWidth="440.0">
+                     <children>
+                        <Pane id="signUp_bar" prefHeight="4.0" prefWidth="45.0">
+                           <VBox.margin>
+                              <Insets bottom="32.0" />
+                           </VBox.margin>
+                        </Pane>
+                        <Label prefHeight="68.0" prefWidth="262.0" text="로그인에 사용할 계정을 등록해 주세요." wrapText="true">
+                           <font>
+                              <Font name="Malgun Gothic" size="24.0" />
+                           </font>
+                        </Label>
+                        <Pane prefHeight="67.0" prefWidth="440.0">
+                           <VBox.margin>
+                              <Insets top="49.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#7c7c7c" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="아이디">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="12.0" />
+                                 </font>
+                              </Text>
+                              <TextField id="id_email" fx:id="inputID" focusTraversable="false" layoutY="14.0" prefHeight="47.0" prefWidth="440.0" promptText="아이디 입력" styleClass="text-input">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="15.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </TextField>
+                           </children>
+                        </Pane>
+                        <Pane prefHeight="331.0" prefWidth="440.0">
+                           <VBox.margin>
+                              <Insets top="49.0" />
+                           </VBox.margin>
+                           <children>
+                              <Text fill="#7c7c7c" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="비밀번호">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="12.0" />
+                                 </font>
+                              </Text>
+                              <TextField id="id_email" fx:id="inputID1" focusTraversable="false" layoutY="15.0" prefHeight="47.0" prefWidth="440.0" promptText="비밀번호 입력" styleClass="text-input">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="15.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </TextField>
+                              <TextField id="id_email" fx:id="inputID11" focusTraversable="false" layoutY="85.0" prefHeight="47.0" prefWidth="440.0" promptText="비밀번호 재입력" styleClass="text-input">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="15.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </TextField>
+                              <Text fill="#7c7c7c" layoutX="-1.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="비밀번호는 8~32자리의 영문 대소문자, 숫자, 특수문자를 조합하여 설정해 주세요." wrappingWidth="447.0000120550394">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="12.0" />
+                                 </font>
+                              </Text>
+                              <Text fill="#7c7c7c" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="다른 사이트에서 사용하는 것과 동일하거나 쉬운 비밀번호는 사용하지 마세요." wrappingWidth="440.0000125169754">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="12.0" />
+                                 </font>
+                              </Text>
+                              <Text fill="#7c7c7c" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="안전한 계정 사용을 위해 비밀번호는 주기적으로 변경해 주세요." wrappingWidth="440.0000125169754">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="12.0" />
+                                 </font>
+                              </Text>
+                              <Button fx:id="submitBtn" layoutY="253.0" mnemonicParsing="false" onMouseClicked="#submitUserSignup" prefHeight="50.0" prefWidth="440.0" styleClass="signUp_submit" text="다음">
+                                 <font>
+                                    <Font name="Malgun Gothic" size="16.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                        </Pane>
+                     </children>
+                     <opaqueInsets>
+                        <Insets left="69.0" right="69.0" />
+                     </opaqueInsets>
+                  </VBox>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </VBox>
+            <Text layoutX="651.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="댕댕맵">
+               <font>
+                  <Font name="Malgun Gothic" size="19.0" />
+               </font>
+            </Text>
          </children>
       </Pane>
    </children>

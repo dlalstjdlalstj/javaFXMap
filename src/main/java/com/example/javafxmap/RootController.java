@@ -159,6 +159,20 @@ public class RootController implements Initializable {
                     = FXMLLoader.load(getClass().getResource("UserSignUP.fxml"));
             Scene scene = new Scene(nextScene);
             Stage primaryStage = (Stage) UserSignUp.getScene().getWindow();
+            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML public void submitUserSignup(){
+        try {
+            Parent nextScene
+                    = FXMLLoader.load(getClass().getResource("firsts.fxml"));
+            Scene scene = new Scene(nextScene);
+            Stage primaryStage = (Stage) submitBtn.getScene().getWindow();
+            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             primaryStage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
