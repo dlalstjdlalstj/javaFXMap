@@ -42,7 +42,7 @@
                                     <Font name="Malgun Gothic" size="12.0" />
                                  </font>
                               </Text>
-                              <TextField id="id_email" fx:id="inputID" focusTraversable="false" layoutY="14.0" prefHeight="47.0" prefWidth="440.0" promptText="아이디 입력" styleClass="text-input">
+                              <TextField id="id_email" fx:id="id" focusTraversable="false" layoutY="14.0" prefHeight="47.0" prefWidth="440.0" promptText="아이디 입력" styleClass="text-input">
                                  <font>
                                     <Font name="Malgun Gothic" size="15.0" />
                                  </font>
@@ -62,15 +62,7 @@
                                     <Font name="Malgun Gothic" size="12.0" />
                                  </font>
                               </Text>
-                              <TextField id="id_email" fx:id="inputID1" focusTraversable="false" layoutY="15.0" prefHeight="47.0" prefWidth="440.0" promptText="비밀번호 입력" styleClass="text-input">
-                                 <font>
-                                    <Font name="Malgun Gothic" size="15.0" />
-                                 </font>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </TextField>
-                              <TextField id="id_email" fx:id="inputID11" focusTraversable="false" layoutY="85.0" prefHeight="47.0" prefWidth="440.0" promptText="비밀번호 재입력" styleClass="text-input">
+                              <TextField id="id_email" fx:id="pw" focusTraversable="false" layoutY="15.0" prefHeight="47.0" prefWidth="440.0" promptText="비밀번호 입력" styleClass="text-input">
                                  <font>
                                     <Font name="Malgun Gothic" size="15.0" />
                                  </font>
@@ -93,7 +85,7 @@
                                     <Font name="Malgun Gothic" size="12.0" />
                                  </font>
                               </Text>
-                              <Button fx:id="submitBtn" layoutY="253.0" mnemonicParsing="false" onMouseClicked="#submitUserSignup" prefHeight="50.0" prefWidth="440.0" styleClass="signUp_submit" text="다음">
+                              <Button fx:id="login2" layoutY="253.0" mnemonicParsing="false" onMouseClicked="#insertMember" prefHeight="50.0" prefWidth="440.0" styleClass="signUp_submit" text="확인">
                                  <font>
                                     <Font name="Malgun Gothic" size="16.0" />
                                  </font>

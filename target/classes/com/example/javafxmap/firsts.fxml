@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="920.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxmap.RootController">
    <children>
-      <Pane styleClass="loginBackColor" prefHeight="920.0" prefWidth="1300.0">
+      <Pane prefHeight="920.0" prefWidth="1300.0" styleClass="loginBackColor">
          <children>
             <VBox id="login_form" layoutX="446.0" layoutY="213.0" prefHeight="494.0" prefWidth="408.0">
                <opaqueInsets>
@@ -28,7 +28,7 @@
                         <Font name="Malgun Gothic" size="32.0" />
                      </font>
                   </Text>
-                  <TextField id="id_email" fx:id="inputID" prefHeight="47.0" promptText="아이디, 이메일, 전화번호" styleClass="text-input" VBox.vgrow="ALWAYS">
+                  <TextField id="id_email" fx:id="id" prefHeight="47.0" promptText="아이디, 이메일, 전화번호" styleClass="text-input" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Malgun Gothic" size="15.0" />
                      </font>
@@ -36,7 +36,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </TextField>
-                  <TextField id="password" prefHeight="47.0" promptText="비밀번호" styleClass="text-input">
+                  <TextField id="password" fx:id="pw" prefHeight="47.0" promptText="비밀번호" styleClass="text-input">
                      <font>
                         <Font name="Malgun Gothic" size="15.0" />
                      </font>
@@ -44,7 +44,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </TextField>
-                  <Button id="login_btn" mnemonicParsing="false" prefHeight="50.0" prefWidth="338.0" text="로그인">
+                  <Button id="login_btn" fx:id="LoginBtn" mnemonicParsing="false" onMouseClicked="#LoginAction" prefHeight="50.0" prefWidth="338.0" text="로그인">
                      <VBox.margin>
                         <Insets top="90.0" />
                      </VBox.margin>
@@ -55,7 +55,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <Label fx:id="UserSignUp" accessibleRole="BUTTON" onMouseClicked="#goUserSignUp" prefHeight="18.0" text="회원가입" textFill="#7c7c7c">
+                  <Label fx:id="sign" accessibleRole="BUTTON" onMouseClicked="#signScene" prefHeight="18.0" text="회원가입" textFill="#7c7c7c">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
